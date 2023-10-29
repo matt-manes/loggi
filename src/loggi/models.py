@@ -35,6 +35,12 @@ class Log:
     def __str__(self) -> str:
         return "\n".join(str(event) for event in self.events)
 
+    def __getitem__(self, subscript: slice) -> Self:
+        return Log(self.events[subscript], self.path)
+
+    def __len__(self) -> int:
+        return len(self.events)
+
     @property
     def num_events(self) -> int:
         return len(self.events)

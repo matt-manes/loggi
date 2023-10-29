@@ -28,7 +28,11 @@ def getLogger(name: str, path: Pathish = Pathier.cwd()) -> logging.Logger:
             datefmt="%x %X",
         )
     )
-    if handler not in logger.handlers:
+    if handler.baseFilename not in [
+        existing_handler.baseFilename
+        for existing_handler in logger.handlers
+        if isinstance(existing_handler, logging.FileHandler)
+    ]:
         logger.addHandler(handler)
     logger.setLevel(logging.INFO)
     return logger

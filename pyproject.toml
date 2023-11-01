@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "loggi"
 description = "logger boilerplate with dataclass models for parsing"
-version = "0.1.0"
+version = "0.1.1"
 requires-python = ">=3.10"
 dependencies = ["pathier", "typing_extensions", "younotyou", "pytest"]
 readme = "README.md"

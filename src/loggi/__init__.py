@@ -2,7 +2,7 @@ import logging
 
 from .logger import getLogger, load_log
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 CRITICAL = logging.CRITICAL
 FATAL = CRITICAL

@@ -10,7 +10,7 @@ root = Pathier(__file__).parent
 def getLogger(name: str, path: Pathish = Pathier.cwd()) -> logging.Logger:
     """Get a configured `logging.Logger` instance for `name` with a file handler.
 
-    The log file will be located in `path`.
+    The log file will be located in `path` at `path/{name}.log`.
 
     Default level is `INFO`.
 
@@ -18,9 +18,11 @@ def getLogger(name: str, path: Pathish = Pathier.cwd()) -> logging.Logger:
 
     asctime is formatted as `%x %X`"""
     path = Pathier(path)
+    path.mkdir()
     logger = logging.getLogger(name)
     # TODO: Add option for a stream handler
-    handler = logging.FileHandler((path / name).with_suffix(".log"), encoding="utf-8")
+    logpath = path / f"{name}.log"
+    handler = logging.FileHandler(logpath, encoding="utf-8")
     handler.setFormatter(
         logging.Formatter(
             "{levelname}|-|{asctime}|-|{message}",

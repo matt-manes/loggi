@@ -23,18 +23,18 @@ def getLogger(name: str, path: Pathish = Pathier.cwd()) -> logging.Logger:
     # TODO: Add option for a stream handler
     logpath = path / f"{name}.log"
     handler = logging.FileHandler(logpath, encoding="utf-8")
-    handler.setFormatter(
-        logging.Formatter(
-            "{levelname}|-|{asctime}|-|{message}",
-            style="{",
-            datefmt="%x %X",
-        )
-    )
     if handler.baseFilename not in [
         existing_handler.baseFilename
         for existing_handler in logger.handlers
         if isinstance(existing_handler, logging.FileHandler)
     ]:
+        handler.setFormatter(
+            logging.Formatter(
+                "{levelname}|-|{asctime}|-|{message}",
+                style="{",
+                datefmt="%x %X",
+            )
+        )
         logger.addHandler(handler)
     logger.setLevel(logging.INFO)
     return logger

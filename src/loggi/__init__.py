@@ -1,6 +1,7 @@
 import logging
 
 from .logger import getLogger, load_log
+from .models import Log, Event
 
 __version__ = "0.1.1"
 

@@ -1,10 +1,10 @@
 import logging
 from logging import Logger
 
-from .logger import getLogger, load_log, get_logpaths, get_logpath, get_log
-from .models import Log, Event
+from .logger import get_log, get_logpath, get_logpaths, getLogger, load_log
+from .models import Event, Log
 
-__version__ = "0.1.1"
+__version__ = "0.2.0"
 
 CRITICAL = logging.CRITICAL
 FATAL = CRITICAL

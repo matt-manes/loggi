@@ -30,13 +30,13 @@ class Log:
     path: Pathier | None = None
 
     def __add__(self, log: Self) -> Self:
-        return Log(self.events + log.events)
+        return self.__class__(self.events + log.events)
 
     def __str__(self) -> str:
         return "\n".join(str(event) for event in self.events)
 
     def __getitem__(self, subscript: slice) -> Self:
-        return Log(self.events[subscript], self.path)
+        return self.__class__(self.events[subscript], self.path)
 
     def __len__(self) -> int:
         return len(self.events)
@@ -82,13 +82,15 @@ class Log:
         """Returns a new `Log` object containing events between `start` and `stop`, inclusive."""
         if not stop:
             stop = datetime.now()
-        return Log(
+        return self.__class__(
             [event for event in self.events if start <= event.date <= stop], self.path
         )
 
     def filter_levels(self, levels: list[str]) -> Self:
         """Returns a new `Log` object containing events with the specified levels."""
-        return Log([event for event in self.events if event.level in levels], self.path)
+        return self.__class__(
+            [event for event in self.events if event.level in levels], self.path
+        )
 
     def filter_messages(
         self,

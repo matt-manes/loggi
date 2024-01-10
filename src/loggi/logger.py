@@ -70,3 +70,10 @@ def get_log(logger: logging.Logger) -> models.Log | None:
     path = get_logpath(logger)
     if path:
         return load_log(path)
+
+
+def close(logger: logging.Logger):
+    """Removes and closes handlers for `logger`."""
+    for handler in logger.handlers:
+        logger.removeHandler(handler)
+        handler.close()

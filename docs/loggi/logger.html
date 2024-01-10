@@ -45,6 +45,9 @@
             <li>
                     <a class="function" href="#get_log">get_log</a>
             </li>
+            <li>
+                    <a class="function" href="#close">close</a>
+            </li>
     </ul>
 
 
@@ -138,6 +141,13 @@
 </span><span id="L-70"><a href="#L-70"><span class="linenos">70</span></a>    <span class="n">path</span> <span class="o">=</span> <span class="n">get_logpath</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
 </span><span id="L-71"><a href="#L-71"><span class="linenos">71</span></a>    <span class="k">if</span> <span class="n">path</span><span class="p">:</span>
 </span><span id="L-72"><a href="#L-72"><span class="linenos">72</span></a>        <span class="k">return</span> <span class="n">load_log</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos">73</span></a>
+</span><span id="L-74"><a href="#L-74"><span class="linenos">74</span></a>
+</span><span id="L-75"><a href="#L-75"><span class="linenos">75</span></a><span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">):</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos">76</span></a>    <span class="sd">&quot;&quot;&quot;Removes and closes handlers for `logger`.&quot;&quot;&quot;</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos">77</span></a>    <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="n">logger</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
+</span><span id="L-78"><a href="#L-78"><span class="linenos">78</span></a>        <span class="n">logger</span><span class="o">.</span><span class="n">removeHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos">79</span></a>        <span class="n">handler</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -300,6 +310,30 @@
             <div class="docstring"><p>Find the corresponding log file for <code>logger</code>, load it into a <code>models.Log</code> instance, and then return it.</p>
 
 <p>Returns <code>None</code> if a log file can't be found.</p>
+</div>
+
+
+                </section>
+                <section id="close">
+                            <input id="close-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">close</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="close-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#close"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="close-76"><a href="#close-76"><span class="linenos">76</span></a><span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">):</span>
+</span><span id="close-77"><a href="#close-77"><span class="linenos">77</span></a>    <span class="sd">&quot;&quot;&quot;Removes and closes handlers for `logger`.&quot;&quot;&quot;</span>
+</span><span id="close-78"><a href="#close-78"><span class="linenos">78</span></a>    <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="n">logger</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
+</span><span id="close-79"><a href="#close-79"><span class="linenos">79</span></a>        <span class="n">logger</span><span class="o">.</span><span class="n">removeHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+</span><span id="close-80"><a href="#close-80"><span class="linenos">80</span></a>        <span class="n">handler</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Removes and closes handlers for <code>logger</code>.</p>
 </div>
 
 

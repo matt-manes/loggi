@@ -4,7 +4,7 @@ from logging import Logger
 from .logger import get_log, get_logpath, get_logpaths, getLogger, load_log
 from .models import Event, Log
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 CRITICAL = logging.CRITICAL
 FATAL = CRITICAL

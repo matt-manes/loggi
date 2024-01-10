@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.3.0 (2024-01-09)
+
+#### New Features
+
+* add close method
+#### Refactorings
+
+* change `return Log(` statements to `return self.__class__(` to appease the type checker
+
+
 ## v0.2.0 (2023-11-07)
 
 #### New Features

@@ -1,7 +1,7 @@
 import logging
 from logging import Logger
 
-from .logger import get_log, get_logpath, get_logpaths, getLogger, load_log
+from .logger import get_log, get_logpath, get_logpaths, getLogger, load_log, close
 from .models import Event, Log
 
 __version__ = "0.3.0"

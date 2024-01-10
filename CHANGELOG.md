@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.3.1 (2024-01-09)
+
+#### Fixes
+
+* add close method to imports
+
+
 ## v0.3.0 (2024-01-09)
 
 #### New Features

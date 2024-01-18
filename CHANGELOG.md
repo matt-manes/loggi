@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.4.1 (2024-01-18)
+
+#### Docs
+
+* add missing docstrings
+
+
 ## v0.4.0 (2024-01-18)
 
 #### New Features

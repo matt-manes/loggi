@@ -1,7 +1,14 @@
 import logging
-from logging import Logger
 
-from .logger import close, get_log, get_logpath, get_logpaths, getLogger, load_log
+from .logger import (
+    Logger,
+    close,
+    get_log,
+    get_logpath,
+    get_logpaths,
+    getLogger,
+    load_log,
+)
 from .models import Event, Log
 
 __version__ = "0.3.1"
@@ -14,3 +21,6 @@ WARN = WARNING
 INFO = logging.INFO
 DEBUG = logging.DEBUG
 NOTSET = logging.NOTSET
+
+
+logging.setLoggerClass(Logger)

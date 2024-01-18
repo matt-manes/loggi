@@ -25,6 +25,10 @@ def a_logger(logname: str, logdir: Pathier) -> loggi.Logger:
     return loggi.getLogger(logname, logdir)
 
 
+def test__subclass(a_logger: loggi.Logger):
+    assert isinstance(a_logger, loggi.Logger)
+
+
 def test__make_log(a_logger: loggi.Logger):
     logger = a_logger
     logger.propagate = False
@@ -79,3 +83,26 @@ def test__get_log(a_logger: loggi.Logger):
     log = loggi.get_log(a_logger)
     assert log
     assert len(log) == 5
+    log = a_logger.get_log()
+    assert log
+    assert len(log) == 5
+
+
+def test__logprint(a_logger: loggi.Logger):
+    a_logger.setLevel(loggi.INFO)
+    # should print
+    a_logger.logprint("Yeet", loggi.INFO)
+    # shouldn't print
+    a_logger.logprint("YeetteeY", loggi.DEBUG)
+
+
+def test__logpaths(a_logger: loggi.Logger, logname: str, logdir: Pathier):
+    assert (logdir / logname).with_suffix(".log") in a_logger.logpaths
+
+
+def test__logpath(a_logger: loggi.Logger, logname: str, logdir: Pathier):
+    assert (logdir / logname).with_suffix(".log") == a_logger.logpath
+
+
+def test__close(a_logger: loggi.Logger):
+    a_logger.close()

@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.4.0 (2024-01-18)
+
+#### New Features
+
+* subclass `logging.Logger` and add additonal functions
+
+
 ## v0.3.1 (2024-01-09)
 
 #### Fixes

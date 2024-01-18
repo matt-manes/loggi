@@ -31,6 +31,27 @@
         <h2>API Documentation</h2>
             <ul class="memberlist">
             <li>
+                    <a class="class" href="#Logger">Logger</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#Logger.logpath">logpath</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Logger.logpaths">logpaths</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Logger.close">close</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Logger.get_log">get_log</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Logger.logprint">logprint</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
                     <a class="function" href="#getLogger">getLogger</a>
             </li>
             <li>
@@ -69,135 +90,377 @@
 
                         <label class="view-source-button" for="mod-logger-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="kn">import</span> <span class="nn">logging</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">from</span> <span class="nn">pathier</span> <span class="kn">import</span> <span class="n">Pathier</span><span class="p">,</span> <span class="n">Pathish</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">from</span> <span class="nn">loggi</span> <span class="kn">import</span> <span class="n">models</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="n">root</span> <span class="o">=</span> <span class="n">Pathier</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="k">def</span> <span class="nf">getLogger</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Pathish</span> <span class="o">=</span> <span class="n">Pathier</span><span class="o">.</span><span class="n">cwd</span><span class="p">())</span> <span class="o">-&gt;</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">:</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="sd">&quot;&quot;&quot;Get a configured `logging.Logger` instance for `name` with a file handler.</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="sd">    The log file will be located in `path` at `path/{name}.log`.</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="sd">    Default level is `INFO`.</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="sd">    Logs are in the format: `{levelname}|-|{asctime}|-|{message}</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="sd">    asctime is formatted as `%x %X`&quot;&quot;&quot;</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>    <span class="n">path</span> <span class="o">=</span> <span class="n">Pathier</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>    <span class="n">path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">()</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>    <span class="c1"># TODO: Add option for a stream handler</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>    <span class="n">logpath</span> <span class="o">=</span> <span class="n">path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">.log&quot;</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>    <span class="n">handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="n">logpath</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>    <span class="k">if</span> <span class="n">handler</span><span class="o">.</span><span class="n">baseFilename</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>        <span class="n">existing_handler</span><span class="o">.</span><span class="n">baseFilename</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>        <span class="k">for</span> <span class="n">existing_handler</span> <span class="ow">in</span> <span class="n">logger</span><span class="o">.</span><span class="n">handlers</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">existing_handler</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">)</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>    <span class="p">]:</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>        <span class="n">handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>            <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>                <span class="s2">&quot;</span><span class="si">{levelname}</span><span class="s2">|-|</span><span class="si">{asctime}</span><span class="s2">|-|</span><span class="si">{message}</span><span class="s2">&quot;</span><span class="p">,</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>                <span class="n">style</span><span class="o">=</span><span class="s2">&quot;{&quot;</span><span class="p">,</span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>                <span class="n">datefmt</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%x</span><span class="s2"> </span><span class="si">%X</span><span class="s2">&quot;</span><span class="p">,</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>            <span class="p">)</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>        <span class="p">)</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>        <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>    <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>    <span class="k">return</span> <span class="n">logger</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>
-</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>
-</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a><span class="k">def</span> <span class="nf">load_log</span><span class="p">(</span><span class="n">logpath</span><span class="p">:</span> <span class="n">Pathish</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">models</span><span class="o">.</span><span class="n">Log</span><span class="p">:</span>
-</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>    <span class="sd">&quot;&quot;&quot;Return a `Log` object for the log file at `logpath`.&quot;&quot;&quot;</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>    <span class="k">return</span> <span class="n">models</span><span class="o">.</span><span class="n">Log</span><span class="o">.</span><span class="n">load_log</span><span class="p">(</span><span class="n">Pathier</span><span class="p">(</span><span class="n">logpath</span><span class="p">))</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>
-</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>
-</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a><span class="k">def</span> <span class="nf">get_logpaths</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Pathier</span><span class="p">]:</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>    <span class="sd">&quot;&quot;&quot;Loop through the handlers for `logger` and return a list of paths for any handler of type `FileHandler`.&quot;&quot;&quot;</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>    <span class="k">return</span> <span class="p">[</span>
-</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>        <span class="n">Pathier</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">baseFilename</span><span class="p">)</span>
-</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>        <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="n">logger</span><span class="o">.</span><span class="n">handlers</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">)</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>    <span class="p">]</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>
-</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>
-</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a><span class="k">def</span> <span class="nf">get_logpath</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pathier</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>    <span class="sd">&quot;&quot;&quot;Search `logger.handlers` for a `FileHandler` that has a file stem matching `logger.name`.</span>
-</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a>
-</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a><span class="sd">    Returns `None` if not found.&quot;&quot;&quot;</span>
-</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">get_logpaths</span><span class="p">(</span><span class="n">logger</span><span class="p">):</span>
-</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">stem</span> <span class="o">==</span> <span class="n">logger</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
-</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a>            <span class="k">return</span> <span class="n">path</span>
-</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a>
-</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a>
-</span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a><span class="k">def</span> <span class="nf">get_log</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">models</span><span class="o">.</span><span class="n">Log</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a>    <span class="sd">&quot;&quot;&quot;Find the corresponding log file for `logger`, load it into a `models.Log` instance, and then return it.</span>
-</span><span id="L-68"><a href="#L-68"><span class="linenos">68</span></a>
-</span><span id="L-69"><a href="#L-69"><span class="linenos">69</span></a><span class="sd">    Returns `None` if a log file can&#39;t be found.&quot;&quot;&quot;</span>
-</span><span id="L-70"><a href="#L-70"><span class="linenos">70</span></a>    <span class="n">path</span> <span class="o">=</span> <span class="n">get_logpath</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
-</span><span id="L-71"><a href="#L-71"><span class="linenos">71</span></a>    <span class="k">if</span> <span class="n">path</span><span class="p">:</span>
-</span><span id="L-72"><a href="#L-72"><span class="linenos">72</span></a>        <span class="k">return</span> <span class="n">load_log</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-</span><span id="L-73"><a href="#L-73"><span class="linenos">73</span></a>
-</span><span id="L-74"><a href="#L-74"><span class="linenos">74</span></a>
-</span><span id="L-75"><a href="#L-75"><span class="linenos">75</span></a><span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">):</span>
-</span><span id="L-76"><a href="#L-76"><span class="linenos">76</span></a>    <span class="sd">&quot;&quot;&quot;Removes and closes handlers for `logger`.&quot;&quot;&quot;</span>
-</span><span id="L-77"><a href="#L-77"><span class="linenos">77</span></a>    <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="n">logger</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
-</span><span id="L-78"><a href="#L-78"><span class="linenos">78</span></a>        <span class="n">logger</span><span class="o">.</span><span class="n">removeHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
-</span><span id="L-79"><a href="#L-79"><span class="linenos">79</span></a>        <span class="n">handler</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="kn">import</span> <span class="nn">logging</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a>
+</span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="kn">from</span> <span class="nn">pathier</span> <span class="kn">import</span> <span class="n">Pathier</span><span class="p">,</span> <span class="n">Pathish</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a>
+</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="kn">from</span> <span class="nn">loggi</span> <span class="kn">import</span> <span class="n">models</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a>
+</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="n">root</span> <span class="o">=</span> <span class="n">Pathier</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a>
+</span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a>
+</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="k">class</span> <span class="nc">Logger</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">):</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a>    <span class="nd">@property</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a>    <span class="k">def</span> <span class="nf">logpath</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pathier</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a>        <span class="sd">&quot;&quot;&quot;Return a file handler path whose stem matches `self.name`, if there is one.&quot;&quot;&quot;</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a>        <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">logpaths</span><span class="p">:</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a>            <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">stem</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a>                <span class="k">return</span> <span class="n">path</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>
+</span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a>    <span class="nd">@property</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a>    <span class="k">def</span> <span class="nf">logpaths</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Pathier</span><span class="p">]:</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a>        <span class="sd">&quot;&quot;&quot;A list of `Pathier` objects for any file handlers attached to this `Logger`.&quot;&quot;&quot;</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a>        <span class="k">return</span> <span class="p">[</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a>            <span class="n">Pathier</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">baseFilename</span><span class="p">)</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a>            <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a>            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">)</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a>        <span class="p">]</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a>
+</span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a>        <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">removeHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a>            <span class="n">handler</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a>
+</span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a>    <span class="k">def</span> <span class="nf">get_log</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">models</span><span class="o">.</span><span class="n">Log</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a>        <span class="sd">&quot;&quot;&quot;Returns a `models.Log` object populated from this logger&#39;s `logpath`.&quot;&quot;&quot;</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a>        <span class="k">if</span> <span class="n">path</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logpath</span><span class="p">:</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a>            <span class="k">return</span> <span class="n">models</span><span class="o">.</span><span class="n">Log</span><span class="o">.</span><span class="n">load_log</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a>
+</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a>    <span class="k">def</span> <span class="nf">logprint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="s2">&quot;INFO&quot;</span><span class="p">):</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a>        <span class="nb">getattr</span><span class="p">(</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a>            <span class="bp">self</span><span class="p">,</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a>            <span class="p">(</span><span class="n">level</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">level</span><span class="p">))</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a>        <span class="p">)(</span><span class="n">message</span><span class="p">)</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a>            <span class="n">level</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a>        <span class="p">):</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a>            <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a>
+</span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a>
+</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a><span class="k">def</span> <span class="nf">getLogger</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Pathish</span> <span class="o">=</span> <span class="n">Pathier</span><span class="o">.</span><span class="n">cwd</span><span class="p">())</span> <span class="o">-&gt;</span> <span class="n">Logger</span><span class="p">:</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a>    <span class="sd">&quot;&quot;&quot;Get a configured `loggi.Logger` instance for `name` with a file handler.</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>
+</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a><span class="sd">    The log file will be located in `path` at `path/{name}.log`.</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a>
+</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a><span class="sd">    Default level is `INFO`.</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a>
+</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a><span class="sd">    Logs are in the format: `{levelname}|-|{asctime}|-|{message}</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a>
+</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a><span class="sd">    asctime is formatted as `%x %X`&quot;&quot;&quot;</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a>    <span class="n">path</span> <span class="o">=</span> <span class="n">Pathier</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a>    <span class="n">path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">()</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a>    <span class="c1"># make sure loggi.Logger is the current logger class</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a>    <span class="n">logging</span><span class="o">.</span><span class="n">setLoggerClass</span><span class="p">(</span><span class="n">Logger</span><span class="p">)</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a>    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="o">.</span><span class="n">manager</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>    <span class="c1"># TODO: Add option for a stream handler</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a>    <span class="c1"># Add file handler using `logger.name`</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>    <span class="n">logpath</span> <span class="o">=</span> <span class="n">path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">logger</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.log&quot;</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>    <span class="n">handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="n">logpath</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>    <span class="k">if</span> <span class="n">handler</span><span class="o">.</span><span class="n">baseFilename</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>        <span class="n">existing_handler</span><span class="o">.</span><span class="n">baseFilename</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>        <span class="k">for</span> <span class="n">existing_handler</span> <span class="ow">in</span> <span class="n">logger</span><span class="o">.</span><span class="n">handlers</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">existing_handler</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">)</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>    <span class="p">]:</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a>        <span class="n">handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a>            <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span>
+</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a>                <span class="s2">&quot;</span><span class="si">{levelname}</span><span class="s2">|-|</span><span class="si">{asctime}</span><span class="s2">|-|</span><span class="si">{message}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;{&quot;</span><span class="p">,</span> <span class="n">datefmt</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%x</span><span class="s2"> </span><span class="si">%X</span><span class="s2">&quot;</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a>            <span class="p">)</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a>        <span class="p">)</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>        <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a>    <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>    <span class="k">return</span> <span class="n">logger</span>  <span class="c1"># type: ignore</span>
+</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>
+</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>
+</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a><span class="k">def</span> <span class="nf">load_log</span><span class="p">(</span><span class="n">logpath</span><span class="p">:</span> <span class="n">Pathish</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">models</span><span class="o">.</span><span class="n">Log</span><span class="p">:</span>
+</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>    <span class="sd">&quot;&quot;&quot;Return a `loggi.models.Log` object for the log file at `logpath`.&quot;&quot;&quot;</span>
+</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a>    <span class="k">return</span> <span class="n">models</span><span class="o">.</span><span class="n">Log</span><span class="o">.</span><span class="n">load_log</span><span class="p">(</span><span class="n">Pathier</span><span class="p">(</span><span class="n">logpath</span><span class="p">))</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>
+</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>
+</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a><span class="c1"># |===================================================|</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a><span class="c1"># Backwards compatibility with previous loggi versions</span>
+</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a><span class="c1"># |===================================================|</span>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>
+</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>
+</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a><span class="k">def</span> <span class="nf">get_logpaths</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span> <span class="o">|</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Pathier</span><span class="p">]:</span>
+</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>    <span class="sd">&quot;&quot;&quot;Loop through the handlers for `logger` and return a list of paths for any handler of type `FileHandler`.&quot;&quot;&quot;</span>
+</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>    <span class="k">return</span> <span class="p">[</span>
+</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>        <span class="n">Pathier</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">baseFilename</span><span class="p">)</span>
+</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>        <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="n">logger</span><span class="o">.</span><span class="n">handlers</span>
+</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">)</span>
+</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>    <span class="p">]</span>
+</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>
+</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>
+</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a><span class="k">def</span> <span class="nf">get_logpath</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span> <span class="o">|</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pathier</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>    <span class="sd">&quot;&quot;&quot;Search `logger.handlers` for a `FileHandler` that has a file stem matching `logger.name`.</span>
+</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>
+</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a><span class="sd">    Returns `None` if not found.&quot;&quot;&quot;</span>
+</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">get_logpaths</span><span class="p">(</span><span class="n">logger</span><span class="p">):</span>
+</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">stem</span> <span class="o">==</span> <span class="n">logger</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>            <span class="k">return</span> <span class="n">path</span>
+</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>
+</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>
+</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a><span class="k">def</span> <span class="nf">get_log</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span> <span class="o">|</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">models</span><span class="o">.</span><span class="n">Log</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>    <span class="sd">&quot;&quot;&quot;Find the corresponding log file for `logger`, load it into a `models.Log` instance, and then return it.</span>
+</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a>
+</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a><span class="sd">    Returns `None` if a log file can&#39;t be found.&quot;&quot;&quot;</span>
+</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>    <span class="n">path</span> <span class="o">=</span> <span class="n">get_logpath</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>    <span class="k">if</span> <span class="n">path</span><span class="p">:</span>
+</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>        <span class="k">return</span> <span class="n">load_log</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>
+</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>
+</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a><span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span> <span class="o">|</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">):</span>
+</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a>    <span class="sd">&quot;&quot;&quot;Removes and closes handlers for `logger`.&quot;&quot;&quot;</span>
+</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a>    <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="n">logger</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
+</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a>        <span class="n">logger</span><span class="o">.</span><span class="n">removeHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>        <span class="n">handler</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </span></pre></div>
 
 
             </section>
+                <section id="Logger">
+                            <input id="Logger-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">Logger</span><wbr>(<span class="base">logging.Logger</span>):
+
+                <label class="view-source-button" for="Logger-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Logger"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Logger-11"><a href="#Logger-11"><span class="linenos">11</span></a><span class="k">class</span> <span class="nc">Logger</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">):</span>
+</span><span id="Logger-12"><a href="#Logger-12"><span class="linenos">12</span></a>    <span class="nd">@property</span>
+</span><span id="Logger-13"><a href="#Logger-13"><span class="linenos">13</span></a>    <span class="k">def</span> <span class="nf">logpath</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pathier</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Logger-14"><a href="#Logger-14"><span class="linenos">14</span></a>        <span class="sd">&quot;&quot;&quot;Return a file handler path whose stem matches `self.name`, if there is one.&quot;&quot;&quot;</span>
+</span><span id="Logger-15"><a href="#Logger-15"><span class="linenos">15</span></a>        <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">logpaths</span><span class="p">:</span>
+</span><span id="Logger-16"><a href="#Logger-16"><span class="linenos">16</span></a>            <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">stem</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+</span><span id="Logger-17"><a href="#Logger-17"><span class="linenos">17</span></a>                <span class="k">return</span> <span class="n">path</span>
+</span><span id="Logger-18"><a href="#Logger-18"><span class="linenos">18</span></a>
+</span><span id="Logger-19"><a href="#Logger-19"><span class="linenos">19</span></a>    <span class="nd">@property</span>
+</span><span id="Logger-20"><a href="#Logger-20"><span class="linenos">20</span></a>    <span class="k">def</span> <span class="nf">logpaths</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Pathier</span><span class="p">]:</span>
+</span><span id="Logger-21"><a href="#Logger-21"><span class="linenos">21</span></a>        <span class="sd">&quot;&quot;&quot;A list of `Pathier` objects for any file handlers attached to this `Logger`.&quot;&quot;&quot;</span>
+</span><span id="Logger-22"><a href="#Logger-22"><span class="linenos">22</span></a>        <span class="k">return</span> <span class="p">[</span>
+</span><span id="Logger-23"><a href="#Logger-23"><span class="linenos">23</span></a>            <span class="n">Pathier</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">baseFilename</span><span class="p">)</span>
+</span><span id="Logger-24"><a href="#Logger-24"><span class="linenos">24</span></a>            <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span>
+</span><span id="Logger-25"><a href="#Logger-25"><span class="linenos">25</span></a>            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">)</span>
+</span><span id="Logger-26"><a href="#Logger-26"><span class="linenos">26</span></a>        <span class="p">]</span>
+</span><span id="Logger-27"><a href="#Logger-27"><span class="linenos">27</span></a>
+</span><span id="Logger-28"><a href="#Logger-28"><span class="linenos">28</span></a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Logger-29"><a href="#Logger-29"><span class="linenos">29</span></a>        <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
+</span><span id="Logger-30"><a href="#Logger-30"><span class="linenos">30</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">removeHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+</span><span id="Logger-31"><a href="#Logger-31"><span class="linenos">31</span></a>            <span class="n">handler</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span><span id="Logger-32"><a href="#Logger-32"><span class="linenos">32</span></a>
+</span><span id="Logger-33"><a href="#Logger-33"><span class="linenos">33</span></a>    <span class="k">def</span> <span class="nf">get_log</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">models</span><span class="o">.</span><span class="n">Log</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Logger-34"><a href="#Logger-34"><span class="linenos">34</span></a>        <span class="sd">&quot;&quot;&quot;Returns a `models.Log` object populated from this logger&#39;s `logpath`.&quot;&quot;&quot;</span>
+</span><span id="Logger-35"><a href="#Logger-35"><span class="linenos">35</span></a>        <span class="k">if</span> <span class="n">path</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logpath</span><span class="p">:</span>
+</span><span id="Logger-36"><a href="#Logger-36"><span class="linenos">36</span></a>            <span class="k">return</span> <span class="n">models</span><span class="o">.</span><span class="n">Log</span><span class="o">.</span><span class="n">load_log</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</span><span id="Logger-37"><a href="#Logger-37"><span class="linenos">37</span></a>
+</span><span id="Logger-38"><a href="#Logger-38"><span class="linenos">38</span></a>    <span class="k">def</span> <span class="nf">logprint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="s2">&quot;INFO&quot;</span><span class="p">):</span>
+</span><span id="Logger-39"><a href="#Logger-39"><span class="linenos">39</span></a>        <span class="nb">getattr</span><span class="p">(</span>
+</span><span id="Logger-40"><a href="#Logger-40"><span class="linenos">40</span></a>            <span class="bp">self</span><span class="p">,</span>
+</span><span id="Logger-41"><a href="#Logger-41"><span class="linenos">41</span></a>            <span class="p">(</span><span class="n">level</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">level</span><span class="p">))</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
+</span><span id="Logger-42"><a href="#Logger-42"><span class="linenos">42</span></a>        <span class="p">)(</span><span class="n">message</span><span class="p">)</span>
+</span><span id="Logger-43"><a href="#Logger-43"><span class="linenos">43</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span>
+</span><span id="Logger-44"><a href="#Logger-44"><span class="linenos">44</span></a>            <span class="n">level</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
+</span><span id="Logger-45"><a href="#Logger-45"><span class="linenos">45</span></a>        <span class="p">):</span>
+</span><span id="Logger-46"><a href="#Logger-46"><span class="linenos">46</span></a>            <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Instances of the Logger class represent a single logging channel. A
+"logging channel" indicates an area of an application. Exactly how an
+"area" is defined is up to the application developer. Since an
+application can have any number of areas, logging channels are identified
+by a unique string. Application areas can be nested (e.g. an area
+of "input processing" might include sub-areas "read CSV files", "read
+XLS files" and "read Gnumeric files"). To cater for this natural nesting,
+channel names are organized into a namespace hierarchy where levels are
+separated by periods, much like the Java or Python package namespace. So
+in the instance given above, channel names might be "input" for the upper
+level, and "input.csv", "input.xls" and "input.gnu" for the sub-levels.
+There is no arbitrary limit to the depth of nesting.</p>
+</div>
+
+
+                            <div id="Logger.logpath" class="classattr">
+                                <div class="attr variable">
+            <span class="name">logpath</span><span class="annotation">: pathier.pathier.Pathier | None</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Logger.logpath"></a>
+    
+            <div class="docstring"><p>Return a file handler path whose stem matches <code>self.name</code>, if there is one.</p>
+</div>
+
+
+                            </div>
+                            <div id="Logger.logpaths" class="classattr">
+                                <div class="attr variable">
+            <span class="name">logpaths</span><span class="annotation">: list[pathier.pathier.Pathier]</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Logger.logpaths"></a>
+    
+            <div class="docstring"><p>A list of <code>Pathier</code> objects for any file handlers attached to this <code><a href="#Logger">Logger</a></code>.</p>
+</div>
+
+
+                            </div>
+                            <div id="Logger.close" class="classattr">
+                                        <input id="Logger.close-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">close</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Logger.close-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Logger.close"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Logger.close-28"><a href="#Logger.close-28"><span class="linenos">28</span></a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Logger.close-29"><a href="#Logger.close-29"><span class="linenos">29</span></a>        <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
+</span><span id="Logger.close-30"><a href="#Logger.close-30"><span class="linenos">30</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">removeHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+</span><span id="Logger.close-31"><a href="#Logger.close-31"><span class="linenos">31</span></a>            <span class="n">handler</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="Logger.get_log" class="classattr">
+                                        <input id="Logger.get_log-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">get_log</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="n"><a href="models.html#Log">loggi.models.Log</a></span> <span class="o">|</span> <span class="kc">None</span>:</span></span>
+
+                <label class="view-source-button" for="Logger.get_log-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Logger.get_log"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Logger.get_log-33"><a href="#Logger.get_log-33"><span class="linenos">33</span></a>    <span class="k">def</span> <span class="nf">get_log</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">models</span><span class="o">.</span><span class="n">Log</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Logger.get_log-34"><a href="#Logger.get_log-34"><span class="linenos">34</span></a>        <span class="sd">&quot;&quot;&quot;Returns a `models.Log` object populated from this logger&#39;s `logpath`.&quot;&quot;&quot;</span>
+</span><span id="Logger.get_log-35"><a href="#Logger.get_log-35"><span class="linenos">35</span></a>        <span class="k">if</span> <span class="n">path</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logpath</span><span class="p">:</span>
+</span><span id="Logger.get_log-36"><a href="#Logger.get_log-36"><span class="linenos">36</span></a>            <span class="k">return</span> <span class="n">models</span><span class="o">.</span><span class="n">Log</span><span class="o">.</span><span class="n">load_log</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Returns a <code>models.Log</code> object populated from this logger's <code><a href="#Logger.logpath">logpath</a></code>.</p>
+</div>
+
+
+                            </div>
+                            <div id="Logger.logprint" class="classattr">
+                                        <input id="Logger.logprint-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">logprint</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">message</span><span class="p">:</span> <span class="nb">str</span>, </span><span class="param"><span class="n">level</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="s1">&#39;INFO&#39;</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Logger.logprint-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Logger.logprint"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Logger.logprint-38"><a href="#Logger.logprint-38"><span class="linenos">38</span></a>    <span class="k">def</span> <span class="nf">logprint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="s2">&quot;INFO&quot;</span><span class="p">):</span>
+</span><span id="Logger.logprint-39"><a href="#Logger.logprint-39"><span class="linenos">39</span></a>        <span class="nb">getattr</span><span class="p">(</span>
+</span><span id="Logger.logprint-40"><a href="#Logger.logprint-40"><span class="linenos">40</span></a>            <span class="bp">self</span><span class="p">,</span>
+</span><span id="Logger.logprint-41"><a href="#Logger.logprint-41"><span class="linenos">41</span></a>            <span class="p">(</span><span class="n">level</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">level</span><span class="p">))</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
+</span><span id="Logger.logprint-42"><a href="#Logger.logprint-42"><span class="linenos">42</span></a>        <span class="p">)(</span><span class="n">message</span><span class="p">)</span>
+</span><span id="Logger.logprint-43"><a href="#Logger.logprint-43"><span class="linenos">43</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span>
+</span><span id="Logger.logprint-44"><a href="#Logger.logprint-44"><span class="linenos">44</span></a>            <span class="n">level</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
+</span><span id="Logger.logprint-45"><a href="#Logger.logprint-45"><span class="linenos">45</span></a>        <span class="p">):</span>
+</span><span id="Logger.logprint-46"><a href="#Logger.logprint-46"><span class="linenos">46</span></a>            <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt>logging.Logger</dt>
+                                <dd id="Logger.__init__" class="function">Logger</dd>
+                <dd id="Logger.setLevel" class="function">setLevel</dd>
+                <dd id="Logger.debug" class="function">debug</dd>
+                <dd id="Logger.info" class="function">info</dd>
+                <dd id="Logger.warning" class="function">warning</dd>
+                <dd id="Logger.warn" class="function">warn</dd>
+                <dd id="Logger.error" class="function">error</dd>
+                <dd id="Logger.exception" class="function">exception</dd>
+                <dd id="Logger.critical" class="function">critical</dd>
+                <dd id="Logger.fatal" class="function">fatal</dd>
+                <dd id="Logger.log" class="function">log</dd>
+                <dd id="Logger.findCaller" class="function">findCaller</dd>
+                <dd id="Logger.makeRecord" class="function">makeRecord</dd>
+                <dd id="Logger.handle" class="function">handle</dd>
+                <dd id="Logger.addHandler" class="function">addHandler</dd>
+                <dd id="Logger.removeHandler" class="function">removeHandler</dd>
+                <dd id="Logger.hasHandlers" class="function">hasHandlers</dd>
+                <dd id="Logger.callHandlers" class="function">callHandlers</dd>
+                <dd id="Logger.getEffectiveLevel" class="function">getEffectiveLevel</dd>
+                <dd id="Logger.isEnabledFor" class="function">isEnabledFor</dd>
+                <dd id="Logger.getChild" class="function">getChild</dd>
+
+            </div>
+            <div><dt>logging.Filterer</dt>
+                                <dd id="Logger.addFilter" class="function">addFilter</dd>
+                <dd id="Logger.removeFilter" class="function">removeFilter</dd>
+                <dd id="Logger.filter" class="function">filter</dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
                 <section id="getLogger">
                             <input id="getLogger-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">getLogger</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">name</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">path</span><span class="p">:</span> <span class="n">pathier</span><span class="o">.</span><span class="n">pathier</span><span class="o">.</span><span class="n">Pathier</span> <span class="o">|</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">WindowsPath</span><span class="p">(</span><span class="s1">&#39;E:/1vsCode/python/loggi&#39;</span><span class="p">)</span></span><span class="return-annotation">) -> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span>:</span></span>
+        <span class="name">getLogger</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">name</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">path</span><span class="p">:</span> <span class="n">pathier</span><span class="o">.</span><span class="n">pathier</span><span class="o">.</span><span class="n">Pathier</span> <span class="o">|</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">WindowsPath</span><span class="p">(</span><span class="s1">&#39;E:/1vsCode/python/loggi&#39;</span><span class="p">)</span></span><span class="return-annotation">) -> <span class="n"><a href="#Logger">loggi.logger.Logger</a></span>:</span></span>
 
                 <label class="view-source-button" for="getLogger-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#getLogger"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="getLogger-11"><a href="#getLogger-11"><span class="linenos">11</span></a><span class="k">def</span> <span class="nf">getLogger</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Pathish</span> <span class="o">=</span> <span class="n">Pathier</span><span class="o">.</span><span class="n">cwd</span><span class="p">())</span> <span class="o">-&gt;</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">:</span>
-</span><span id="getLogger-12"><a href="#getLogger-12"><span class="linenos">12</span></a>    <span class="sd">&quot;&quot;&quot;Get a configured `logging.Logger` instance for `name` with a file handler.</span>
-</span><span id="getLogger-13"><a href="#getLogger-13"><span class="linenos">13</span></a>
-</span><span id="getLogger-14"><a href="#getLogger-14"><span class="linenos">14</span></a><span class="sd">    The log file will be located in `path` at `path/{name}.log`.</span>
-</span><span id="getLogger-15"><a href="#getLogger-15"><span class="linenos">15</span></a>
-</span><span id="getLogger-16"><a href="#getLogger-16"><span class="linenos">16</span></a><span class="sd">    Default level is `INFO`.</span>
-</span><span id="getLogger-17"><a href="#getLogger-17"><span class="linenos">17</span></a>
-</span><span id="getLogger-18"><a href="#getLogger-18"><span class="linenos">18</span></a><span class="sd">    Logs are in the format: `{levelname}|-|{asctime}|-|{message}</span>
-</span><span id="getLogger-19"><a href="#getLogger-19"><span class="linenos">19</span></a>
-</span><span id="getLogger-20"><a href="#getLogger-20"><span class="linenos">20</span></a><span class="sd">    asctime is formatted as `%x %X`&quot;&quot;&quot;</span>
-</span><span id="getLogger-21"><a href="#getLogger-21"><span class="linenos">21</span></a>    <span class="n">path</span> <span class="o">=</span> <span class="n">Pathier</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-</span><span id="getLogger-22"><a href="#getLogger-22"><span class="linenos">22</span></a>    <span class="n">path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">()</span>
-</span><span id="getLogger-23"><a href="#getLogger-23"><span class="linenos">23</span></a>    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-</span><span id="getLogger-24"><a href="#getLogger-24"><span class="linenos">24</span></a>    <span class="c1"># TODO: Add option for a stream handler</span>
-</span><span id="getLogger-25"><a href="#getLogger-25"><span class="linenos">25</span></a>    <span class="n">logpath</span> <span class="o">=</span> <span class="n">path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">.log&quot;</span>
-</span><span id="getLogger-26"><a href="#getLogger-26"><span class="linenos">26</span></a>    <span class="n">handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="n">logpath</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
-</span><span id="getLogger-27"><a href="#getLogger-27"><span class="linenos">27</span></a>    <span class="k">if</span> <span class="n">handler</span><span class="o">.</span><span class="n">baseFilename</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span>
-</span><span id="getLogger-28"><a href="#getLogger-28"><span class="linenos">28</span></a>        <span class="n">existing_handler</span><span class="o">.</span><span class="n">baseFilename</span>
-</span><span id="getLogger-29"><a href="#getLogger-29"><span class="linenos">29</span></a>        <span class="k">for</span> <span class="n">existing_handler</span> <span class="ow">in</span> <span class="n">logger</span><span class="o">.</span><span class="n">handlers</span>
-</span><span id="getLogger-30"><a href="#getLogger-30"><span class="linenos">30</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">existing_handler</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">)</span>
-</span><span id="getLogger-31"><a href="#getLogger-31"><span class="linenos">31</span></a>    <span class="p">]:</span>
-</span><span id="getLogger-32"><a href="#getLogger-32"><span class="linenos">32</span></a>        <span class="n">handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span>
-</span><span id="getLogger-33"><a href="#getLogger-33"><span class="linenos">33</span></a>            <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span>
-</span><span id="getLogger-34"><a href="#getLogger-34"><span class="linenos">34</span></a>                <span class="s2">&quot;</span><span class="si">{levelname}</span><span class="s2">|-|</span><span class="si">{asctime}</span><span class="s2">|-|</span><span class="si">{message}</span><span class="s2">&quot;</span><span class="p">,</span>
-</span><span id="getLogger-35"><a href="#getLogger-35"><span class="linenos">35</span></a>                <span class="n">style</span><span class="o">=</span><span class="s2">&quot;{&quot;</span><span class="p">,</span>
-</span><span id="getLogger-36"><a href="#getLogger-36"><span class="linenos">36</span></a>                <span class="n">datefmt</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%x</span><span class="s2"> </span><span class="si">%X</span><span class="s2">&quot;</span><span class="p">,</span>
-</span><span id="getLogger-37"><a href="#getLogger-37"><span class="linenos">37</span></a>            <span class="p">)</span>
-</span><span id="getLogger-38"><a href="#getLogger-38"><span class="linenos">38</span></a>        <span class="p">)</span>
-</span><span id="getLogger-39"><a href="#getLogger-39"><span class="linenos">39</span></a>        <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
-</span><span id="getLogger-40"><a href="#getLogger-40"><span class="linenos">40</span></a>    <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
-</span><span id="getLogger-41"><a href="#getLogger-41"><span class="linenos">41</span></a>    <span class="k">return</span> <span class="n">logger</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="getLogger-49"><a href="#getLogger-49"><span class="linenos">49</span></a><span class="k">def</span> <span class="nf">getLogger</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Pathish</span> <span class="o">=</span> <span class="n">Pathier</span><span class="o">.</span><span class="n">cwd</span><span class="p">())</span> <span class="o">-&gt;</span> <span class="n">Logger</span><span class="p">:</span>
+</span><span id="getLogger-50"><a href="#getLogger-50"><span class="linenos">50</span></a>    <span class="sd">&quot;&quot;&quot;Get a configured `loggi.Logger` instance for `name` with a file handler.</span>
+</span><span id="getLogger-51"><a href="#getLogger-51"><span class="linenos">51</span></a>
+</span><span id="getLogger-52"><a href="#getLogger-52"><span class="linenos">52</span></a><span class="sd">    The log file will be located in `path` at `path/{name}.log`.</span>
+</span><span id="getLogger-53"><a href="#getLogger-53"><span class="linenos">53</span></a>
+</span><span id="getLogger-54"><a href="#getLogger-54"><span class="linenos">54</span></a><span class="sd">    Default level is `INFO`.</span>
+</span><span id="getLogger-55"><a href="#getLogger-55"><span class="linenos">55</span></a>
+</span><span id="getLogger-56"><a href="#getLogger-56"><span class="linenos">56</span></a><span class="sd">    Logs are in the format: `{levelname}|-|{asctime}|-|{message}</span>
+</span><span id="getLogger-57"><a href="#getLogger-57"><span class="linenos">57</span></a>
+</span><span id="getLogger-58"><a href="#getLogger-58"><span class="linenos">58</span></a><span class="sd">    asctime is formatted as `%x %X`&quot;&quot;&quot;</span>
+</span><span id="getLogger-59"><a href="#getLogger-59"><span class="linenos">59</span></a>    <span class="n">path</span> <span class="o">=</span> <span class="n">Pathier</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</span><span id="getLogger-60"><a href="#getLogger-60"><span class="linenos">60</span></a>    <span class="n">path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">()</span>
+</span><span id="getLogger-61"><a href="#getLogger-61"><span class="linenos">61</span></a>    <span class="c1"># make sure loggi.Logger is the current logger class</span>
+</span><span id="getLogger-62"><a href="#getLogger-62"><span class="linenos">62</span></a>    <span class="n">logging</span><span class="o">.</span><span class="n">setLoggerClass</span><span class="p">(</span><span class="n">Logger</span><span class="p">)</span>
+</span><span id="getLogger-63"><a href="#getLogger-63"><span class="linenos">63</span></a>    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="o">.</span><span class="n">manager</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+</span><span id="getLogger-64"><a href="#getLogger-64"><span class="linenos">64</span></a>    <span class="c1"># TODO: Add option for a stream handler</span>
+</span><span id="getLogger-65"><a href="#getLogger-65"><span class="linenos">65</span></a>    <span class="c1"># Add file handler using `logger.name`</span>
+</span><span id="getLogger-66"><a href="#getLogger-66"><span class="linenos">66</span></a>    <span class="n">logpath</span> <span class="o">=</span> <span class="n">path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">logger</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.log&quot;</span>
+</span><span id="getLogger-67"><a href="#getLogger-67"><span class="linenos">67</span></a>    <span class="n">handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="n">logpath</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+</span><span id="getLogger-68"><a href="#getLogger-68"><span class="linenos">68</span></a>    <span class="k">if</span> <span class="n">handler</span><span class="o">.</span><span class="n">baseFilename</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span>
+</span><span id="getLogger-69"><a href="#getLogger-69"><span class="linenos">69</span></a>        <span class="n">existing_handler</span><span class="o">.</span><span class="n">baseFilename</span>
+</span><span id="getLogger-70"><a href="#getLogger-70"><span class="linenos">70</span></a>        <span class="k">for</span> <span class="n">existing_handler</span> <span class="ow">in</span> <span class="n">logger</span><span class="o">.</span><span class="n">handlers</span>
+</span><span id="getLogger-71"><a href="#getLogger-71"><span class="linenos">71</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">existing_handler</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">)</span>
+</span><span id="getLogger-72"><a href="#getLogger-72"><span class="linenos">72</span></a>    <span class="p">]:</span>
+</span><span id="getLogger-73"><a href="#getLogger-73"><span class="linenos">73</span></a>        <span class="n">handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span>
+</span><span id="getLogger-74"><a href="#getLogger-74"><span class="linenos">74</span></a>            <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span>
+</span><span id="getLogger-75"><a href="#getLogger-75"><span class="linenos">75</span></a>                <span class="s2">&quot;</span><span class="si">{levelname}</span><span class="s2">|-|</span><span class="si">{asctime}</span><span class="s2">|-|</span><span class="si">{message}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;{&quot;</span><span class="p">,</span> <span class="n">datefmt</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%x</span><span class="s2"> </span><span class="si">%X</span><span class="s2">&quot;</span>
+</span><span id="getLogger-76"><a href="#getLogger-76"><span class="linenos">76</span></a>            <span class="p">)</span>
+</span><span id="getLogger-77"><a href="#getLogger-77"><span class="linenos">77</span></a>        <span class="p">)</span>
+</span><span id="getLogger-78"><a href="#getLogger-78"><span class="linenos">78</span></a>        <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+</span><span id="getLogger-79"><a href="#getLogger-79"><span class="linenos">79</span></a>    <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+</span><span id="getLogger-80"><a href="#getLogger-80"><span class="linenos">80</span></a>    <span class="k">return</span> <span class="n">logger</span>  <span class="c1"># type: ignore</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Get a configured <code>logging.Logger</code> instance for <code>name</code> with a file handler.</p>
+            <div class="docstring"><p>Get a configured <code>loggi.Logger</code> instance for <code>name</code> with a file handler.</p>
 
 <p>The log file will be located in <code>path</code> at <code>path/{name}.log</code>.</p>
 
@@ -221,13 +484,13 @@
 
     </div>
     <a class="headerlink" href="#load_log"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="load_log-44"><a href="#load_log-44"><span class="linenos">44</span></a><span class="k">def</span> <span class="nf">load_log</span><span class="p">(</span><span class="n">logpath</span><span class="p">:</span> <span class="n">Pathish</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">models</span><span class="o">.</span><span class="n">Log</span><span class="p">:</span>
-</span><span id="load_log-45"><a href="#load_log-45"><span class="linenos">45</span></a>    <span class="sd">&quot;&quot;&quot;Return a `Log` object for the log file at `logpath`.&quot;&quot;&quot;</span>
-</span><span id="load_log-46"><a href="#load_log-46"><span class="linenos">46</span></a>    <span class="k">return</span> <span class="n">models</span><span class="o">.</span><span class="n">Log</span><span class="o">.</span><span class="n">load_log</span><span class="p">(</span><span class="n">Pathier</span><span class="p">(</span><span class="n">logpath</span><span class="p">))</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="load_log-83"><a href="#load_log-83"><span class="linenos">83</span></a><span class="k">def</span> <span class="nf">load_log</span><span class="p">(</span><span class="n">logpath</span><span class="p">:</span> <span class="n">Pathish</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">models</span><span class="o">.</span><span class="n">Log</span><span class="p">:</span>
+</span><span id="load_log-84"><a href="#load_log-84"><span class="linenos">84</span></a>    <span class="sd">&quot;&quot;&quot;Return a `loggi.models.Log` object for the log file at `logpath`.&quot;&quot;&quot;</span>
+</span><span id="load_log-85"><a href="#load_log-85"><span class="linenos">85</span></a>    <span class="k">return</span> <span class="n">models</span><span class="o">.</span><span class="n">Log</span><span class="o">.</span><span class="n">load_log</span><span class="p">(</span><span class="n">Pathier</span><span class="p">(</span><span class="n">logpath</span><span class="p">))</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Return a <code>Log</code> object for the log file at <code>logpath</code>.</p>
+            <div class="docstring"><p>Return a <code><a href="models.html#Log">loggi.models.Log</a></code> object for the log file at <code>logpath</code>.</p>
 </div>
 
 
@@ -237,19 +500,19 @@
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">get_logpaths</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span></span><span class="return-annotation">) -> <span class="nb">list</span><span class="p">[</span><span class="n">pathier</span><span class="o">.</span><span class="n">pathier</span><span class="o">.</span><span class="n">Pathier</span><span class="p">]</span>:</span></span>
+        <span class="name">get_logpaths</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">logger</span><span class="p">:</span> <span class="n"><a href="#Logger">loggi.logger.Logger</a></span> <span class="o">|</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span></span><span class="return-annotation">) -> <span class="nb">list</span><span class="p">[</span><span class="n">pathier</span><span class="o">.</span><span class="n">pathier</span><span class="o">.</span><span class="n">Pathier</span><span class="p">]</span>:</span></span>
 
                 <label class="view-source-button" for="get_logpaths-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#get_logpaths"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="get_logpaths-49"><a href="#get_logpaths-49"><span class="linenos">49</span></a><span class="k">def</span> <span class="nf">get_logpaths</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Pathier</span><span class="p">]:</span>
-</span><span id="get_logpaths-50"><a href="#get_logpaths-50"><span class="linenos">50</span></a>    <span class="sd">&quot;&quot;&quot;Loop through the handlers for `logger` and return a list of paths for any handler of type `FileHandler`.&quot;&quot;&quot;</span>
-</span><span id="get_logpaths-51"><a href="#get_logpaths-51"><span class="linenos">51</span></a>    <span class="k">return</span> <span class="p">[</span>
-</span><span id="get_logpaths-52"><a href="#get_logpaths-52"><span class="linenos">52</span></a>        <span class="n">Pathier</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">baseFilename</span><span class="p">)</span>
-</span><span id="get_logpaths-53"><a href="#get_logpaths-53"><span class="linenos">53</span></a>        <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="n">logger</span><span class="o">.</span><span class="n">handlers</span>
-</span><span id="get_logpaths-54"><a href="#get_logpaths-54"><span class="linenos">54</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">)</span>
-</span><span id="get_logpaths-55"><a href="#get_logpaths-55"><span class="linenos">55</span></a>    <span class="p">]</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="get_logpaths-93"><a href="#get_logpaths-93"><span class="linenos">93</span></a><span class="k">def</span> <span class="nf">get_logpaths</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span> <span class="o">|</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Pathier</span><span class="p">]:</span>
+</span><span id="get_logpaths-94"><a href="#get_logpaths-94"><span class="linenos">94</span></a>    <span class="sd">&quot;&quot;&quot;Loop through the handlers for `logger` and return a list of paths for any handler of type `FileHandler`.&quot;&quot;&quot;</span>
+</span><span id="get_logpaths-95"><a href="#get_logpaths-95"><span class="linenos">95</span></a>    <span class="k">return</span> <span class="p">[</span>
+</span><span id="get_logpaths-96"><a href="#get_logpaths-96"><span class="linenos">96</span></a>        <span class="n">Pathier</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">baseFilename</span><span class="p">)</span>
+</span><span id="get_logpaths-97"><a href="#get_logpaths-97"><span class="linenos">97</span></a>        <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="n">logger</span><span class="o">.</span><span class="n">handlers</span>
+</span><span id="get_logpaths-98"><a href="#get_logpaths-98"><span class="linenos">98</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">)</span>
+</span><span id="get_logpaths-99"><a href="#get_logpaths-99"><span class="linenos">99</span></a>    <span class="p">]</span>
 </span></pre></div>
 
 
@@ -263,19 +526,19 @@
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">get_logpath</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span></span><span class="return-annotation">) -> <span class="n">pathier</span><span class="o">.</span><span class="n">pathier</span><span class="o">.</span><span class="n">Pathier</span> <span class="o">|</span> <span class="kc">None</span>:</span></span>
+        <span class="name">get_logpath</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">logger</span><span class="p">:</span> <span class="n"><a href="#Logger">loggi.logger.Logger</a></span> <span class="o">|</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span></span><span class="return-annotation">) -> <span class="n">pathier</span><span class="o">.</span><span class="n">pathier</span><span class="o">.</span><span class="n">Pathier</span> <span class="o">|</span> <span class="kc">None</span>:</span></span>
 
                 <label class="view-source-button" for="get_logpath-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#get_logpath"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="get_logpath-58"><a href="#get_logpath-58"><span class="linenos">58</span></a><span class="k">def</span> <span class="nf">get_logpath</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pathier</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="get_logpath-59"><a href="#get_logpath-59"><span class="linenos">59</span></a>    <span class="sd">&quot;&quot;&quot;Search `logger.handlers` for a `FileHandler` that has a file stem matching `logger.name`.</span>
-</span><span id="get_logpath-60"><a href="#get_logpath-60"><span class="linenos">60</span></a>
-</span><span id="get_logpath-61"><a href="#get_logpath-61"><span class="linenos">61</span></a><span class="sd">    Returns `None` if not found.&quot;&quot;&quot;</span>
-</span><span id="get_logpath-62"><a href="#get_logpath-62"><span class="linenos">62</span></a>    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">get_logpaths</span><span class="p">(</span><span class="n">logger</span><span class="p">):</span>
-</span><span id="get_logpath-63"><a href="#get_logpath-63"><span class="linenos">63</span></a>        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">stem</span> <span class="o">==</span> <span class="n">logger</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
-</span><span id="get_logpath-64"><a href="#get_logpath-64"><span class="linenos">64</span></a>            <span class="k">return</span> <span class="n">path</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="get_logpath-102"><a href="#get_logpath-102"><span class="linenos">102</span></a><span class="k">def</span> <span class="nf">get_logpath</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span> <span class="o">|</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pathier</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="get_logpath-103"><a href="#get_logpath-103"><span class="linenos">103</span></a>    <span class="sd">&quot;&quot;&quot;Search `logger.handlers` for a `FileHandler` that has a file stem matching `logger.name`.</span>
+</span><span id="get_logpath-104"><a href="#get_logpath-104"><span class="linenos">104</span></a>
+</span><span id="get_logpath-105"><a href="#get_logpath-105"><span class="linenos">105</span></a><span class="sd">    Returns `None` if not found.&quot;&quot;&quot;</span>
+</span><span id="get_logpath-106"><a href="#get_logpath-106"><span class="linenos">106</span></a>    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">get_logpaths</span><span class="p">(</span><span class="n">logger</span><span class="p">):</span>
+</span><span id="get_logpath-107"><a href="#get_logpath-107"><span class="linenos">107</span></a>        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">stem</span> <span class="o">==</span> <span class="n">logger</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+</span><span id="get_logpath-108"><a href="#get_logpath-108"><span class="linenos">108</span></a>            <span class="k">return</span> <span class="n">path</span>
 </span></pre></div>
 
 
@@ -291,19 +554,19 @@
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">get_log</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span></span><span class="return-annotation">) -> <span class="n"><a href="models.html#Log">loggi.models.Log</a></span> <span class="o">|</span> <span class="kc">None</span>:</span></span>
+        <span class="name">get_log</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">logger</span><span class="p">:</span> <span class="n"><a href="#Logger">loggi.logger.Logger</a></span> <span class="o">|</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span></span><span class="return-annotation">) -> <span class="n"><a href="models.html#Log">loggi.models.Log</a></span> <span class="o">|</span> <span class="kc">None</span>:</span></span>
 
                 <label class="view-source-button" for="get_log-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#get_log"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="get_log-67"><a href="#get_log-67"><span class="linenos">67</span></a><span class="k">def</span> <span class="nf">get_log</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">models</span><span class="o">.</span><span class="n">Log</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="get_log-68"><a href="#get_log-68"><span class="linenos">68</span></a>    <span class="sd">&quot;&quot;&quot;Find the corresponding log file for `logger`, load it into a `models.Log` instance, and then return it.</span>
-</span><span id="get_log-69"><a href="#get_log-69"><span class="linenos">69</span></a>
-</span><span id="get_log-70"><a href="#get_log-70"><span class="linenos">70</span></a><span class="sd">    Returns `None` if a log file can&#39;t be found.&quot;&quot;&quot;</span>
-</span><span id="get_log-71"><a href="#get_log-71"><span class="linenos">71</span></a>    <span class="n">path</span> <span class="o">=</span> <span class="n">get_logpath</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
-</span><span id="get_log-72"><a href="#get_log-72"><span class="linenos">72</span></a>    <span class="k">if</span> <span class="n">path</span><span class="p">:</span>
-</span><span id="get_log-73"><a href="#get_log-73"><span class="linenos">73</span></a>        <span class="k">return</span> <span class="n">load_log</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="get_log-111"><a href="#get_log-111"><span class="linenos">111</span></a><span class="k">def</span> <span class="nf">get_log</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span> <span class="o">|</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">models</span><span class="o">.</span><span class="n">Log</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="get_log-112"><a href="#get_log-112"><span class="linenos">112</span></a>    <span class="sd">&quot;&quot;&quot;Find the corresponding log file for `logger`, load it into a `models.Log` instance, and then return it.</span>
+</span><span id="get_log-113"><a href="#get_log-113"><span class="linenos">113</span></a>
+</span><span id="get_log-114"><a href="#get_log-114"><span class="linenos">114</span></a><span class="sd">    Returns `None` if a log file can&#39;t be found.&quot;&quot;&quot;</span>
+</span><span id="get_log-115"><a href="#get_log-115"><span class="linenos">115</span></a>    <span class="n">path</span> <span class="o">=</span> <span class="n">get_logpath</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>
+</span><span id="get_log-116"><a href="#get_log-116"><span class="linenos">116</span></a>    <span class="k">if</span> <span class="n">path</span><span class="p">:</span>
+</span><span id="get_log-117"><a href="#get_log-117"><span class="linenos">117</span></a>        <span class="k">return</span> <span class="n">load_log</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -319,17 +582,17 @@
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">close</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span></span><span class="return-annotation">):</span></span>
+        <span class="name">close</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">logger</span><span class="p">:</span> <span class="n"><a href="#Logger">loggi.logger.Logger</a></span> <span class="o">|</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="close-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#close"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="close-76"><a href="#close-76"><span class="linenos">76</span></a><span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">):</span>
-</span><span id="close-77"><a href="#close-77"><span class="linenos">77</span></a>    <span class="sd">&quot;&quot;&quot;Removes and closes handlers for `logger`.&quot;&quot;&quot;</span>
-</span><span id="close-78"><a href="#close-78"><span class="linenos">78</span></a>    <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="n">logger</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
-</span><span id="close-79"><a href="#close-79"><span class="linenos">79</span></a>        <span class="n">logger</span><span class="o">.</span><span class="n">removeHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
-</span><span id="close-80"><a href="#close-80"><span class="linenos">80</span></a>        <span class="n">handler</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="close-120"><a href="#close-120"><span class="linenos">120</span></a><span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span> <span class="o">|</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">):</span>
+</span><span id="close-121"><a href="#close-121"><span class="linenos">121</span></a>    <span class="sd">&quot;&quot;&quot;Removes and closes handlers for `logger`.&quot;&quot;&quot;</span>
+</span><span id="close-122"><a href="#close-122"><span class="linenos">122</span></a>    <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="n">logger</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
+</span><span id="close-123"><a href="#close-123"><span class="linenos">123</span></a>        <span class="n">logger</span><span class="o">.</span><span class="n">removeHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+</span><span id="close-124"><a href="#close-124"><span class="linenos">124</span></a>        <span class="n">handler</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </span></pre></div>
 
 

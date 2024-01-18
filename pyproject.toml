@@ -1,8 +1,8 @@
 [project]
 name = "loggi"
 description = "logger boilerplate with dataclass models for parsing"
-version = "0.3.1"
-dependencies = ["pathier", "typing_extensions", "younotyou", "pytest", "loggi"]
+version = "0.4.0"
+dependencies = ["pathier", "typing_extensions", "younotyou"]
 readme = "README.md"
 keywords = ["log", "logger", "logging"]
 classifiers = ["Programming Language :: Python :: 3", "License :: OSI Approved :: MIT License", "Operating System :: OS Independent"]

@@ -25,6 +25,7 @@ class Logger(logging.Logger):
         ]
 
     def close(self):
+        """Remove and close this logger's handlers."""
         for handler in self.handlers:
             self.removeHandler(handler)
             handler.close()
@@ -35,6 +36,9 @@ class Logger(logging.Logger):
             return models.Log.load_log(path)
 
     def logprint(self, message: str, level: str | int = "INFO"):
+        """Log and print `message`.
+
+        Only prints if the logger is enabled for the give `level`."""
         getattr(
             self,
             (level if isinstance(level, str) else logging.getLevelName(level)).lower(),

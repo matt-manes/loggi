@@ -11,7 +11,7 @@ from .logger import (
 )
 from .models import Event, Log
 
-__version__ = "0.4.0"
+__version__ = "0.4.1"
 
 CRITICAL = logging.CRITICAL
 FATAL = CRITICAL

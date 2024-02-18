@@ -12,6 +12,18 @@ from .logger import (
 from .models import Event, Log
 
 __version__ = "0.4.1"
+__all__ = [
+    "Logger",
+    "close",
+    "get_log",
+    "get_logpath",
+    "get_logpaths",
+    "getLogger",
+    "load_log",
+    "Event",
+    "Log",
+    "logging",
+]
 
 CRITICAL = logging.CRITICAL
 FATAL = CRITICAL

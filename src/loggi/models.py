@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from datetime import datetime
 
 from pathier import Pathier, Pathish
-from typing_extensions import Self
+from typing_extensions import Self, Callable
 from younotyou import younotyou
 
 root = Pathier(__file__).parent
@@ -49,8 +49,10 @@ class Log:
     def _parse_events(events: list[str]) -> list[Event]:
         """Convert a list of loggi event strings into a list of `Event` objects."""
         sep = "|-|"
-        to_datetime = lambda date: datetime.strptime(date, "%x %X")
-        logs = []
+        to_datetime: Callable[[str], datetime] = lambda date: datetime.strptime(
+            date, "%x %X"
+        )
+        logs: list[Event] = []
         for event in events:
             level, date, message = event.split(sep, maxsplit=3)
             logs.append(Event(level, to_datetime(date), message))
@@ -59,7 +61,7 @@ class Log:
     @staticmethod
     def _split_log_into_events(log: str) -> list[str]:
         """Decompose a string of loggi events into a list of events, accounting for multi-line events."""
-        events = []
+        events: list[str] = []
         event = ""
         for line in log.splitlines(True):
             if re.findall("[A-Z]+\\|\\-\\|", line):

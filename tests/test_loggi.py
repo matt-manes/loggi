@@ -1,6 +1,5 @@
 # import logging
 import time
-from datetime import datetime
 
 import pytest
 from pathier import Pathier
@@ -11,8 +10,8 @@ root = Pathier(__file__).parent
 
 
 @pytest.fixture(scope="module")
-def logdir(tmp_path_factory) -> Pathier:
-    return Pathier(tmp_path_factory.mktemp("logs"))
+def logdir(tmp_path_factory) -> Pathier:  # type: ignore
+    return Pathier(tmp_path_factory.mktemp("logs"))  # type: ignore
 
 
 @pytest.fixture(scope="module")

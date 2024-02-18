@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from datetime import datetime
 
 from pathier import Pathier, Pathish
-from typing_extensions import Self, Callable
+from typing_extensions import Callable, Self
 from younotyou import younotyou
 
 root = Pathier(__file__).parent

@@ -1,7 +1,7 @@
 [project]
 name = "loggi"
 description = "logger boilerplate with dataclass models for parsing"
-version = "0.4.1"
+version = "0.4.2"
 dependencies = ["pathier", "typing_extensions", "younotyou"]
 readme = "README.md"
 keywords = ["log", "logger", "logging"]
@@ -25,7 +25,7 @@ addopts = ["--import-mode=importlib"]
 pythonpath = "src"
 
 [tool.hatch.build.targets.sdist]
-exclude = [".coverage", ".pytest_cache", ".vscode", "tests", "htmlcov", "docs","*.md"]
+exclude = [".coverage", ".pytest_cache", ".vscode", "tests", "htmlcov", "docs", "*.md"]
 
 [build-system]
 requires = ["hatchling"]

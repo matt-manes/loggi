@@ -6,41 +6,49 @@ logger boilerplate with dataclass models for parsing
 
 Install with:
 
-<pre>
+```console
 pip install loggi
-</pre>
-
-
+```
 
 ## Usage
 
-<pre>
+```python
 >>> import loggi
 >>> logger = loggi.getLogger("demo", "logs") 
-</pre>
-The file "demo.log" will be created inside a folder named "logs" in the current directory.<br>
+```
+
+The file "demo.log" will be created inside a folder named "logs" in the current directory.  
 
 loggi wraps the logging level mapping so the log level can be set without importing the logging module
-<pre>
+
+```python
 >>> logger.setLevel(loggi.DEBUG)
-</pre>
+```
+
 Also loggi imports the logging module when it's initialized, so all logging module features can be utilized without explicity importing logging yourself
-<pre>
+
+```python
 >>> print(loggi.logging.getLevelName(loggi.INFO))
 INFO
-</pre>
+```
+
 loggi uses the format `{level}|-|{date}|-|{message}` where date has the format `%x %X`
-<pre>
+
+```python
 >>> logger.info("yeehaw")
-</pre>
+```
+
 produces the log
-<pre>
+
+```python
 INFO|-|10/26/23 18:48:30|-|yeehaw
-</pre>
-loggi also contains two dataclasses: `Log` and `Event`.<br>
-A `Log` object contains a list of `Event` objects that can be loaded from a log file (that uses the above format).<br>
+```
+
+loggi also contains two dataclasses: `Log` and `Event`.  
+A `Log` object contains a list of `Event` objects that can be loaded from a log file (that uses the above format).  
 Each `Event` contains `level: str`, `date: datetime`, `message: str` fields.
-<pre>
+
+```python
 >>> log = loggi.load_log("logs/demo.log")
 >>> print(log)
 INFO|-|10/26/23 18:48:30|-|yeehaw
@@ -48,42 +56,80 @@ INFO|-|10/26/23 18:48:30|-|yeehaw
 1
 >>> print(log.events[0].level)
 INFO
-</pre>
-`Log` objects can be added together.<br>
+```
+
+`Log` objects can be added together.  
+
 Useless examples:
-<pre>
+
+```python
 >>> log += log
 >>> print(log)
 INFO|-|2023-10-26 18:48:30|-|yeehaw
 INFO|-|2023-10-26 18:48:30|-|yeehaw
-</pre>
+```
+
 New, filtered `Log` objects can be created using the `filter_dates`, `filter_levels`, and `filter_messages` functions.
-<pre>
+
+```python
 >>> from datetime import datetime, timedelta
 >>> log = loggi.load_log("realistic_log.log")
-</pre>
+```
+
 Filtering for events between 24 and 48 hours ago:
-<pre>
+
+```python
 >>> filtered_log = log.filter_dates(datetime.now() - timedelta(days=2), datetime.now() - timedelta(days=1))
-</pre>
+```
+
 Filtering for events with critical and error levels:
-<pre>
+
+```python
 >>> filtered_log = log.filter_levels(["CRITICAL", "ERROR"])
-</pre>
+```
+
 Filtering for events whose message contains "yeehaw", but not "double yeehaw" or "oopsie":
-<pre>
+
+```python
 >>> filtered_log = log.filter_messages(["*yeehaw*"], ["*double yeehaw*", "*oopsie*"])
-</pre>
+```
+
 The filtering methods can be chained:
-<pre>
+
+```python
 >>> log_slice = log.filter_dates(datetime.now() - timedelta(days=2), datetime.now() - timedelta(days=1)).filter_levels(["CRITICAL", "ERROR"])
-</pre>
+```
+
 When adding `Log` objects, the `chronosort()` function can be used to reorder the events by date:
-<pre>
+
+```python
 >>> log = filtered_log + log_slice
 >>> log.chronosort()
-</pre>
+```
+
 `log` now contains all critical and error level events between 24 and 48 hours ago,
-as well as events from anytime of any level with "yeehaw" in the message, but not "double yeehaw" or "oopsie".
+as well as events from anytime of any level with "yeehaw" in the message, but not "double yeehaw" or "oopsie".  
 
+### LoggerMixin
 
+For convenience, the `LoggerMixin` class can be inherited from to provide initialization of a `logger` attribute:
+
+```python
+class Yeehaw(loggi.LoggerMixin):
+    def __init__(self):
+        self.init_logger()
+
+dummy = Yeehaw()
+dummy.logger.info("yeet")
+```
+
+By default, the log file will be named after the class inheriting from `LoggerMixin` (`Yeehaw`), but lowercase and stored in a "logs" folder of the current directory. (`logs/yeehaw.log`)  
+The logger name, directory, and logging level can be specified with arguments to `self.init_logger()`.  
+
+```python
+class Yeehaw(loggi.LoggerMixin):
+    def __init__(self):
+        self.init_logger(name="yeet", log_dir="top_secret", log_level="DEBUG")
+```
+
+Logged messages for the above class will be written to the path `top_secret/yeet.log`.  

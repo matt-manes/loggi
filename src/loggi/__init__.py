@@ -13,7 +13,7 @@ from .logger import (
 )
 from .models import Event, Log
 
-__version__ = "0.4.2"
+__version__ = "0.5.0"
 __all__ = [
     "Logger",
     "close",

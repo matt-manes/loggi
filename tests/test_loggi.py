@@ -112,7 +112,8 @@ class Dummy(loggi.LoggerMixin):
         self.init_logger()
 
 
-class Dummy2(Dummy): ...
+class Dummy2(Dummy):
+    ...
 
 
 class Dummy3(loggi.LoggerMixin):

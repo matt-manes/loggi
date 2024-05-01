@@ -1,7 +1,7 @@
 [project]
 name = "loggi"
 description = "logger boilerplate with dataclass models for parsing"
-version = "0.4.2"
+version = "0.5.0"
 dependencies = ["pathier", "typing_extensions", "younotyou"]
 readme = "README.md"
 keywords = ["log", "logger", "logging"]

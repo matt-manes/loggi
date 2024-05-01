@@ -2,6 +2,8 @@ import logging
 
 from .logger import (
     Logger,
+    LoggerMixin,
+    LogName,
     close,
     get_log,
     get_logpath,
@@ -23,6 +25,8 @@ __all__ = [
     "Event",
     "Log",
     "logging",
+    "LoggerMixin",
+    "LogName",
 ]
 
 CRITICAL = logging.CRITICAL

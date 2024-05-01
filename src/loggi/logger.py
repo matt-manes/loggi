@@ -1,4 +1,6 @@
+import inspect
 import logging
+from enum import Enum
 
 from pathier import Pathier, Pathish
 
@@ -86,6 +88,47 @@ def getLogger(name: str, path: Pathish = Pathier.cwd()) -> Logger:
 def load_log(logpath: Pathish) -> models.Log:
     """Return a `loggi.models.Log` object for the log file at `logpath`."""
     return models.Log.load_log(Pathier(logpath))
+
+
+class LogName(Enum):
+    CLASSNAME = 1
+    FILENAME = 2
+
+
+class LoggerMixin:
+    """Inherit from this class and call `self.init_logger()` in your `__init__()` function.
+
+    The logger instance can then be accessed through `self.logger`."""
+
+    def init_logger(
+        self,
+        name: str | int | LogName = LogName.CLASSNAME,
+        log_dir: Pathish = "logs",
+        log_level: int | str = "INFO",
+    ):
+        """
+        Initialize the logger instance.
+
+        #### :params:
+        * `name`: The name for the logger. The log file will be named `{name}.log`.
+        If `LogName.CLASSNAME` is given, a lowercase version of the name of the inheriting class will be used.
+        If `LogName.FILENAME` is given, a lowercase version of the file stem the inheriting class is instantiated in will be used.
+        * `log_dir`: The directory the log file will be written to.
+        * `log_level`: The level for the logger.
+        """
+        log_dir = Pathier(log_dir)
+        if name == LogName.CLASSNAME:
+            name = self.__class__.__name__.lower()
+        elif name == LogName.FILENAME:
+            source_file = inspect.getsourcefile(type(self))
+            if source_file:
+                name = Pathier(source_file).stem
+            else:
+                name = Pathier(__file__).stem
+            name = name.lower()
+        name = str(name)
+        self.logger = getLogger(name, log_dir)
+        self.logger.setLevel(log_level)
 
 
 # |===================================================|

@@ -105,3 +105,42 @@ def test__logpath(a_logger: loggi.Logger, logname: str, logdir: Pathier):
 
 def test__close(a_logger: loggi.Logger):
     a_logger.close()
+
+
+class Dummy(loggi.LoggerMixin):
+    def __init__(self):
+        self.init_logger()
+
+
+class Dummy2(Dummy): ...
+
+
+class Dummy3(loggi.LoggerMixin):
+    def __init__(self):
+        self.init_logger(loggi.LogName.FILENAME)
+
+
+def test__mixin():
+    (Pathier.cwd() / "logs").delete()
+    dummy = Dummy()
+    dummy.logger.info("test")
+    log = dummy.logger.get_log()
+    assert log
+    assert log.path == Pathier.cwd() / "logs" / "dummy.log"
+    assert log.num_events == 1
+    assert log.events[0].level == "INFO"
+    assert log.events[0].message == "test"
+    dummy.logger.close()
+    dummy = Dummy2()
+    dummy.logger.info("test")
+    log = dummy.logger.get_log()
+    assert log
+    assert log.path == Pathier.cwd() / "logs" / "dummy2.log"
+    dummy.logger.close()
+    dummy = Dummy3()
+    dummy.logger.info("test")
+    log = dummy.logger.get_log()
+    assert log
+    assert log.path == Pathier.cwd() / "logs" / "test_loggi.log"
+    dummy.logger.close()
+    (Pathier.cwd() / "logs").delete()
